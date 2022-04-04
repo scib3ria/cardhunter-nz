@@ -1,0 +1,1 @@
+from cardhunternz import CardHunter
