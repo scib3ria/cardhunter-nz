@@ -6,19 +6,16 @@ card_hunter = CardHunter()
 cards = [
     "Gremlin Infestation",
     "Famished Paladin",
+    "Crashing Drawbridge",
 ]
 prices = []
 card_hunter.findCards(cards)
+
+# use card_hunter.summarisePrices().to_csv() for better spreadsheet parsing
 print(card_hunter.summarisePrices())
 
-
-#                         Card  Hobbymaster  Hareruya EN  Hareruya JP  Baydragon  Goblin Games  Spellbound  Magic at Willis  Iron Knight Gaming  Magic Magpie
-# 0          Archmage Emeritus         -1.0        10.39         1.30       3.60           2.5         3.0             -1.0                  -1            -1
-# 1   Deekah, Fractal Theorist         -1.0        -1.00         3.90       1.66           1.5         2.1             -1.0                  -1            -1
-# 2         Chandra's Ignition         -1.0        -1.00         6.49      -1.00          -1.0        -1.0              8.5                  -1            -1
-# 3   Veyran, Voice of Duality         -1.0        -1.00        -1.00      21.36          22.0        -1.0             -1.0                  -1            -1
-# 4  Zaffir, Thunder Conductor         -1.0        -1.00        -1.00      -1.00          -1.0        -1.0             -1.0                  -1            -1
-# 5  Jadzi, Oracle of Arcavios          4.8         6.49        32.47      -1.00           5.0        -1.0             -1.0                  -1            -1
-# 6     Octavia, Living Thesis          1.8        -1.00        -1.00       5.22           3.5        -1.0             -1.0                  -1            -1
-# 0       Spawnbroker          0.9          3.9         3.90         -1           0.7         1.5              0.7                  -1         -1.00
-# 1  Puppeteer Clique         -1.0          2.6         0.65         -1           7.5        -1.0              7.6                  -1          9.55
+#                      Lowest price Best store(s)   Hobbymaster     BayDragon  BeaDndGames   Calico Keep     Card Bard Card Merchant Card Merchant Nelson  Goblin Games Iron Knight Gaming Magic at Willis Shuffle and Cut Games Spellbound Games
+# Gremlin Infestation          0.36     BayDragon           0.5          0.36          0.4  Out of Stock  Out of Stock  Out of Stock         Out of Stock           0.5                0.4    Out of Stock          Out of Stock              0.8
+# Famished Paladin             0.40   Hobbymaster           0.4          0.47          0.5  Out of Stock  Out of Stock  Out of Stock         Out of Stock           0.5       Out of Stock    Out of Stock                     1              0.8
+# Crashing Drawbridge          0.30  Goblin Games  Out of Stock  Out of Stock          0.6           0.4  Out of Stock  Out of Stock         Out of Stock           0.3       Out of Stock    Out of Stock          Out of Stock     Out of Stock
+# Total                        1.06             0           0.9          0.83          1.5           0.4             0             0                    0           1.3                0.4               0                     1              1.6
