@@ -8,6 +8,7 @@ class CardHunter:
     stores = {
             'Hobbymaster': 'https://hobbymaster.co.nz/cards/get-cards',
             'BayDragon': 'https://www.baydragon.co.nz/search/category/01',
+            'BeaDndGames': 'bea-dnd.myshopify.com',
             'Calico Keep': 'calico-keep.myshopify.com',
             'Card Bard': 'cardbard.myshopify.com',
             'Card Merchant': 'chloetest.myshopify.com',
