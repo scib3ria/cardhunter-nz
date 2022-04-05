@@ -4,6 +4,7 @@ Currently works for Magic: the Gathering and Flesh and Blood cards.
 Searches the following stores:
 - Hobbymaster
 - BayDragon
+- BeaDndGames
 - Calico Keep
 - Card Bard
 - Card Merchant
