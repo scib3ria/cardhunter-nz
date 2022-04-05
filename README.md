@@ -37,3 +37,16 @@ cardhunter.findCards(card_list)
 The cardhunter will take some time to retrieve and process the data.
 
 Once finished, call `cardhunter.summarisePrices()` to display a summary of the card prices in a pandas dataframe. You may also call `cardhunter.summarisePrices(pandas=False)` to display a text summary of the card prices if you would prefer.
+
+# Requirements
+
+Using python3
+
+```pip install -r requirements.txt```
+
+Use a virtual environment first
+
+```
+python3 -m venv .venv
+. .venv/bin/activate
+```
