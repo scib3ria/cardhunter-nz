@@ -118,7 +118,8 @@ class CardHunter:
         # Determines what are the cheapest cards from each store
         cheapest_cards = [min([card['Price'] for card in stocklist[store]]) if stocklist[store] else 'Out of Stock' for store in stocklist.keys()]
         # Assigns lowest price and best store if the card is out of stock everywhere
-        if list(set(cheapest_cards))[0] == 'Out of Stock':
+        price_options = list(set(cheapest_cards))
+        if len(price_options) == 0 and price_options[0] == 'Out of Stock':
             lowest_price = 'N/A'
             best_stores = 'Not available'
         # Finds the lowest price out of the cheapest cards from each store
