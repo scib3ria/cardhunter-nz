@@ -18,6 +18,7 @@ class CardHunter:
             'Magic at Willis': 'magicatwillis.myshopify.com',
             'Shuffle and Cut Games': 'shuffle-n-cut-hobbies-games.myshopify.com',
             'Spellbound Games': 'spellboundgames.myshopify.com',
+            'TCG Culture': 'tcgculture.myshopify.com'
         }
     def __init__(self):
         self.data = {}
