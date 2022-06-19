@@ -14,6 +14,7 @@ Searches the following stores:
 - Magic at Willis
 - Shuffle and Cut Games
 - Spellbound Games
+- TCG Culture
 
 # Instructions
 
