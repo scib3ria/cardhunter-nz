@@ -5,12 +5,16 @@ from cardstore import ShopifyStore, HobbyMasterStore, BayDragonStore
 class CardHunter:
     # List of New Zealand stores selling trading card singles (specifically Magic: the Gathering and Flesh and Blood)
     
-    def __init__(self):
+    def __init__(self, mtg_search=False, fab_search=False):
         self.data = pd.DataFrame()
         # Instantiates a requests session for connecting to store websites
         self.conn = requests.Session()
-        # Choose which games you want to search
-        self.games = [i for i in ['MTG Single', 'Flesh And Blood Single'] if input(f'Are you searching for {i}s? (y/n): ') == 'y']
+        self.games = []
+        if mtg_search: self.games.append('MTG Single')
+        if fab_search: self.games.append('Flesh And Blood Single')
+        # Choose which games you want to search if no default set
+        if not self.games:
+            self.games = [i for i in ['MTG Single', 'Flesh And Blood Single'] if input(f'Are you searching for {i}s? (y/n): ') == 'y']
         self.stores = [
             HobbyMasterStore(url='https://hobbymaster.co.nz/cards/get-cards', name='HobbyMaster', games=self.games),
             BayDragonStore(url = 'https://www.baydragon.co.nz/search/category/01', name='BayDragon', games=self.games),
@@ -33,7 +37,7 @@ class CardHunter:
         for store in self.stores:
             store.findCards(card_list)
             results.append(store.get_dataframe())
-        self.data = pd.concat(results, ignore_index=True)
+        self.data = pd.concat(results, ignore_index=True).sort_values(by=['card_name', 'price']).reset_index(drop=True)
         for card in card_list:
             if card not in list(self.data['card_name'].unique()):
                 print(f'Though we have searched far and wide, {card} is nowhere to be found in fair New Zealand!')
@@ -42,4 +46,4 @@ class CardHunter:
         return self.data.loc[self.data.groupby('card_name')['price'].idxmin(), :]
 
     def allPrices(self):
-        return self.data.sort_values(by=['card_name', 'price'])
+        return self.data
