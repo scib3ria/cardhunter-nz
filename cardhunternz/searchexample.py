@@ -6,16 +6,40 @@ card_hunter = CardHunter()
 cards = [
     "Gremlin Infestation",
     "Famished Paladin",
-    "Crashing Drawbridge",
+    "Crashing Drawbridge"
 ]
 prices = []
 card_hunter.findCards(cards)
 
-# use card_hunter.summarisePrices().to_csv() for better spreadsheet parsing
-print(card_hunter.summarisePrices())
+# use card_hunter.allPrices().to_csv() for better spreadsheet parsing
+print("Cheapest prices:")
+print(card_hunter.cheapestPrices())
+print("\nAll prices:")
+print(card_hunter.allPrices())
 
-#                      Lowest price Best store(s)   Hobbymaster     BayDragon  BeaDndGames   Calico Keep     Card Bard Card Merchant Card Merchant Nelson  Goblin Games Iron Knight Gaming Magic at Willis Shuffle and Cut Games Spellbound Games
-# Gremlin Infestation          0.36     BayDragon           0.5          0.36          0.4  Out of Stock  Out of Stock  Out of Stock         Out of Stock           0.5                0.4    Out of Stock          Out of Stock              0.8
-# Famished Paladin             0.40   Hobbymaster           0.4          0.47          0.5  Out of Stock  Out of Stock  Out of Stock         Out of Stock           0.5       Out of Stock    Out of Stock                     1              0.8
-# Crashing Drawbridge          0.30  Goblin Games  Out of Stock  Out of Stock          0.6           0.4  Out of Stock  Out of Stock         Out of Stock           0.3       Out of Stock    Out of Stock          Out of Stock     Out of Stock
-# Total                        1.06             0           0.9          0.83          1.5           0.4             0             0                    0           1.3                0.4               0                     1              1.6
+# Cheapest prices:
+#               card_name         store                                            version  price
+# 8   Crashing Drawbridge   BeaDndGames  Crashing Drawbridge [Throne of Eldraine] - Nea...   0.80
+# 11     Famished Paladin  Goblin Games      Famished Paladin [Rivals of Ixalan] - NM-Mint   0.50
+# 4   Gremlin Infestation     BayDragon  Gremlin Infestation [Magic the Gathering Aethe...   0.41
+
+# All prices:
+#               card_name             store                                            version  price
+# 0   Gremlin Infestation       HobbyMaster                             Gremlin Infestation NM   0.50
+# 1   Gremlin Infestation       HobbyMaster                      Gremlin Infestation (Foil) NM   1.00
+# 2      Famished Paladin       HobbyMaster                                Famished Paladin NM   0.60
+# 3   Crashing Drawbridge       HobbyMaster                             Crashing Drawbridge NM   0.90
+# 4   Gremlin Infestation         BayDragon  Gremlin Infestation [Magic the Gathering Aethe...   0.41
+# 5      Famished Paladin         BayDragon  Famished Paladin [Magic the Gathering Rivals o...   0.56
+# 6   Gremlin Infestation       BeaDndGames    Gremlin Infestation [Aether Revolt] - Near Mint   0.50
+# 7      Famished Paladin       BeaDndGames    Famished Paladin [Rivals of Ixalan] - Near Mint   0.70
+# 8   Crashing Drawbridge       BeaDndGames  Crashing Drawbridge [Throne of Eldraine] - Nea...   0.80
+# 9   Crashing Drawbridge     Card Merchant  Crashing Drawbridge [Throne of Eldraine] - Nea...   1.00
+# 10  Gremlin Infestation      Goblin Games      Gremlin Infestation [Aether Revolt] - NM-Mint   0.50
+# 11     Famished Paladin      Goblin Games      Famished Paladin [Rivals of Ixalan] - NM-Mint   0.50
+# 12  Crashing Drawbridge      Goblin Games  Crashing Drawbridge [Throne of Eldraine] - NM-...   1.00
+# 13  Crashing Drawbridge      Goblin Games  Crashing Drawbridge [Throne of Eldraine] - NM-...   1.50
+# 14  Gremlin Infestation  Spellbound Games      Gremlin Infestation [Aether Revolt] - NM / SP   0.80
+# 15  Gremlin Infestation  Spellbound Games  Gremlin Infestation [Aether Revolt] - NM / SP ...   0.80
+# 16     Famished Paladin  Spellbound Games      Famished Paladin [Rivals of Ixalan] - NM / SP   0.80
+# 17     Famished Paladin  Spellbound Games  Famished Paladin [Rivals of Ixalan] - NM / SP ...   0.80
