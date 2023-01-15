@@ -4,6 +4,7 @@ import requests
 import time
 import json
 from bs4 import BeautifulSoup
+from alive_progress import alive_bar
 
 class CardStore(ABC):
     def __init__(self, url, name, games, skip_art_cards=True):
@@ -18,11 +19,14 @@ class CardStore(ABC):
         # Updates the data with each card in card_list containing an empty dict
         self.data.update({k: {} for k in card_list})
 
-        for card_name in self.data.keys():
-            searchTime = time.time()
-            self.data[card_name] = self.storeSearch(card_name)
-            # print(f"Searching {self.name} for {card_name} took {time.time()-searchTime:.2f} seconds")
-        return self.data
+        with alive_bar(len(self.data.keys()), dual_line=True, title=self.name, title_length=21) as bar:
+            for card_name in self.data.keys():
+                searchTime = time.time()
+                bar.text = f'Hunting for {card_name}'
+                self.data[card_name] = self.storeSearch(card_name)
+                # print(f"Searching {self.name} for {card_name} took {time.time()-searchTime:.2f} seconds")
+                bar()
+            return self.data
 
     @abstractmethod
     def storeSearch(self, card_name):
