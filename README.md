@@ -20,9 +20,9 @@ Searches the following stores:
 
 Instantiate the cardhunter like so:
 
-```cardhunter = CardHunter()```
+```cardhunter = CardHunter(mtg_search=True)```
 
-This will create a cardhunter object that will prompt you as to which card games you would like to search for (currently Magic: the Gathering and Flesh and Blood). Enter y or n at each prompt.
+This will create a cardhunter object searching for Magic: The Gathering cards. If no search selection is provided, you'll then be prompted as to which card games you would like to search for (currently Magic: the Gathering and Flesh and Blood). Enter y or n at each prompt.
 
 Search for cards like so:
 
@@ -38,7 +38,7 @@ cardhunter.findCards(card_list)
 
 The cardhunter will take some time to retrieve and process the data.
 
-Once finished, call `cardhunter.summarisePrices()` to display a summary of the card prices in a pandas dataframe. You may also call `cardhunter.summarisePrices(pandas=False)` to display a text summary of the card prices if you would prefer.
+Once finished, call `cardhunter.cheapestPrices()` to see which stores have the best deals for earch searched card, or `cardhunter.allPrices` to display a summary of all card prices in a pandas dataframe.
 
 # Requirements
 
