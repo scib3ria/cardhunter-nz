@@ -6,10 +6,11 @@ import json
 from bs4 import BeautifulSoup
 
 class CardStore(ABC):
-    def __init__(self, url, name, games):
+    def __init__(self, url, name, games, skip_art_cards=True):
         self.url = url
         self.name = name
         self.games = games
+        self.skip_art_cards=skip_art_cards
         self.conn = requests.Session()
         self.data = {}
 
@@ -20,7 +21,7 @@ class CardStore(ABC):
         for card_name in self.data.keys():
             searchTime = time.time()
             self.data[card_name] = self.storeSearch(card_name)
-            print(f"Searching {self.name} for {card_name} took {time.time()-searchTime:.2f} seconds")
+            # print(f"Searching {self.name} for {card_name} took {time.time()-searchTime:.2f} seconds")
         return self.data
 
     @abstractmethod
@@ -61,7 +62,9 @@ class ShopifyStore(CardStore):
                     for variant in product['variants']:
                         # print(variant)
                         if variant['quantity'] > 0:
-                            # print(variant)
+                            # skip art cards
+                            if ("art card" in product["title"].lower()) and self.skip_art_cards:
+                                continue
                             card_results.append({
                                 'Name': '{} - {}'.format(product["title"], variant["title"]),
                                 'Price': variant['price'],
@@ -86,6 +89,9 @@ class HobbyMasterStore(CardStore):
                     quantity = result['cell'][12]
                     if quantity == '8+': quantity = 8
 
+                    # skip art cards
+                    if ("art card" in result["cell"][0].lower()) and self.skip_art_cards:
+                                continue
                     card_results.append({
                         'Name': f'{result["cell"][0]} {result["cell"][9]}',
                         'Price': float(result['cell'][10].replace('$', '')),
@@ -113,6 +119,11 @@ class BayDragonStore(CardStore):
             # print(d)
             # Filters out the column headings and any cards that are out of stock
             if d[7] not in ['Onhand', '0']:
+
+                # skip art cards
+                if ("art card" in d[1].lower()) and self.skip_art_cards:
+                    continue
+
                 card_results.append({
                     'Name': "{} [{}] - {}".format(d[1], d[2], d[5]),
                     'Price': float(d[6].replace('NZ$', '')),
