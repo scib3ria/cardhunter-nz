@@ -42,4 +42,4 @@ class CardHunter:
         return self.data.loc[self.data.groupby('card_name')['price'].idxmin(), :]
 
     def allPrices(self):
-        return self.data
+        return self.data.sort_values(by=['card_name', 'price'])

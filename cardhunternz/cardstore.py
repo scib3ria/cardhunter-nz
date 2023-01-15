@@ -35,7 +35,8 @@ class CardStore(ABC):
                     'card_name': search_name,
                     'store': self.name,
                     'version': variant['Name'],
-                    'price': variant['Price']
+                    'price': variant['Price'],
+                    'quantity': variant['Quantity']
                 }
                 flat_list.append(flat_json)
         df = pd.DataFrame.from_records(flat_list)
@@ -59,11 +60,12 @@ class ShopifyStore(CardStore):
                 if product['overallQuantity']:
                     for variant in product['variants']:
                         # print(variant)
-                        if variant['quantity']:
+                        if variant['quantity'] > 0:
                             # print(variant)
                             card_results.append({
                                 'Name': '{} - {}'.format(product["title"], variant["title"]),
                                 'Price': variant['price'],
+                                'Quantity': variant['quantity']
                             })
         # print(card_results)
         return card_results
@@ -80,9 +82,14 @@ class HobbyMasterStore(CardStore):
                 data.extend(hb_data['rows'])
         for result in data:
                 if result['cell'][12] != 0:
+                    # replace '8+' string with int
+                    quantity = result['cell'][12]
+                    if quantity == '8+': quantity = 8
+
                     card_results.append({
                         'Name': f'{result["cell"][0]} {result["cell"][9]}',
-                        'Price': float(result['cell'][10].replace('$', ''))
+                        'Price': float(result['cell'][10].replace('$', '')),
+                        'Quantity': quantity
                     })
         return card_results
     
@@ -108,7 +115,8 @@ class BayDragonStore(CardStore):
             if d[7] not in ['Onhand', '0']:
                 card_results.append({
                     'Name': "{} [{}] - {}".format(d[1], d[2], d[5]),
-                    'Price': float(d[6].replace('NZ$', ''))
+                    'Price': float(d[6].replace('NZ$', '')),
+                    'Quantity': d[7]
                 })
         return card_results
 
