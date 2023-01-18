@@ -11,22 +11,24 @@ cards = [
 prices = []
 card_hunter.findCards(cards)
 
-# use card_hunter.allPrices().to_csv() for better spreadsheet parsing
+# turn off pandas max rows
+pd.set_option("display.max_rows", None)
 print("Cheapest prices:")
 print(card_hunter.cheapestPrices())
 print("\nAll prices:")
 print(card_hunter.allPrices())
+# use card_hunter.allPrices().to_csv() for better spreadsheet parsing
 
 # Cheapest prices:
 #               card_name         store                                            version  price quantity
-# 0   Crashing Drawbridge   BeaDndGames  Crashing Drawbridge [Throne of Eldraine] - Nea...   0.80       33
+# 0   Crashing Drawbridge   HobbyMaster                             Crashing Drawbridge NM   0.80        3
 # 4      Famished Paladin  Goblin Games      Famished Paladin [Rivals of Ixalan] - NM-Mint   0.50        7
 # 10  Gremlin Infestation     BayDragon  Gremlin Infestation [Magic the Gathering Aethe...   0.41        3
 
 # All prices:
 #               card_name             store                                            version  price quantity
-# 0   Crashing Drawbridge       BeaDndGames  Crashing Drawbridge [Throne of Eldraine] - Nea...   0.80       33
-# 1   Crashing Drawbridge       HobbyMaster                             Crashing Drawbridge NM   0.90        3
+# 0   Crashing Drawbridge       HobbyMaster                             Crashing Drawbridge NM   0.80        3
+# 1   Crashing Drawbridge       BeaDndGames  Crashing Drawbridge [Throne of Eldraine] - Nea...   0.80       33
 # 2   Crashing Drawbridge      Goblin Games  Crashing Drawbridge [Throne of Eldraine] - NM-...   1.00        7
 # 3   Crashing Drawbridge      Goblin Games  Crashing Drawbridge [Throne of Eldraine] - NM-...   1.50        1
 # 4      Famished Paladin      Goblin Games      Famished Paladin [Rivals of Ixalan] - NM-Mint   0.50        7

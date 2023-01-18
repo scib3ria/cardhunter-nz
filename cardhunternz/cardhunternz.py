@@ -42,8 +42,14 @@ class CardHunter:
             if card not in list(self.data['card_name'].unique()):
                 print(f'Though we have searched far and wide, {card} is nowhere to be found in fair New Zealand!')
     
-    def cheapestPrices(self):
-        return self.data.loc[self.data.groupby('card_name')['price'].idxmin(), :]
+    def cheapestPrices(self, pandas=True):
+        cheapest_cards = self.data.loc[self.data.groupby('card_name')['price'].idxmin(), :]
+        if pandas:
+            return cheapest_cards
+        else:
+            return f"""{cheapest_cards.to_string()}
+
+The lowest total cost for these cards (excluding shipping costs) is ${cheapest_cards['price'].sum()}"""
 
     def allPrices(self):
         return self.data

@@ -1,8 +1,6 @@
 from abc import ABC, abstractmethod
 import pandas as pd
 import requests
-import time
-import json
 from bs4 import BeautifulSoup
 from alive_progress import alive_bar
 
@@ -21,10 +19,8 @@ class CardStore(ABC):
 
         with alive_bar(len(self.data.keys()), dual_line=True, title=self.name, title_length=21) as bar:
             for card_name in self.data.keys():
-                searchTime = time.time()
                 bar.text = f'Hunting for {card_name}'
                 self.data[card_name] = self.storeSearch(card_name)
-                # print(f"Searching {self.name} for {card_name} took {time.time()-searchTime:.2f} seconds")
                 bar()
             return self.data
 
@@ -48,7 +44,7 @@ class CardStore(ABC):
         return df
 
 class ShopifyStore(CardStore):
-
+    # Queries BinderPOS API for each store  and processes the resulting data
     def storeSearch(self, card_name):
         card_results = []
         data = {
@@ -64,7 +60,6 @@ class ShopifyStore(CardStore):
         for product in resp['products']:
                 if product['overallQuantity']:
                     for variant in product['variants']:
-                        # print(variant)
                         if variant['quantity'] > 0:
                             # skip art cards
                             if ("art card" in product["title"].lower()) and self.skip_art_cards:
@@ -74,7 +69,6 @@ class ShopifyStore(CardStore):
                                 'Price': variant['price'],
                                 'Quantity': variant['quantity']
                             })
-        # print(card_results)
         return card_results
 
 class HobbyMasterStore(CardStore):
@@ -83,16 +77,16 @@ class HobbyMasterStore(CardStore):
         data = []
         for game in self.games:
             game_number = '1' if game == 'MTG Single' else '37'
-            hb_data = self.conn.get(f'https://hobbymaster.co.nz/cards/get-cards?lang=&game={game_number}$foil=&_search=true&name={card_name}').json()
-            # print(hb_data)
+            hb_data = self.conn.get(f'{self.url}?lang=&game={game_number}$foil=&_search=true&name={card_name}').json()
             if 'rows' in hb_data:
                 data.extend(hb_data['rows'])
+        # The data from Hobbymaster is stored a little strangely. Each cell is a list containing 12 items related to a card entry
+        # The cell[0] is the card name, cell[9] is the card condition, cell[10] is the card price and cell[12] is the card stock
         for result in data:
                 if result['cell'][12] != 0:
                     # replace '8+' string with int
                     quantity = result['cell'][12]
                     if quantity == '8+': quantity = 8
-
                     # skip art cards
                     if ("art card" in result["cell"][0].lower()) and self.skip_art_cards:
                                 continue
@@ -106,11 +100,11 @@ class HobbyMasterStore(CardStore):
 class BayDragonStore(CardStore):
     def storeSearch(self, card_name):
         card_results = []
+        # baydragon does not currently sell Flesh and Blood singles
         if 'MTG Single' not in self.games:
-                return card_results
+            return card_results
         params = {'searchType': 'single', 'searchString': card_name}
-        url = 'https://www.baydragon.co.nz/search/category/01'
-        html_content = self.conn.get(url, params=params).text
+        html_content = self.conn.get(self.url, params=params).text
         data = BeautifulSoup(html_content, "lxml")
         # HTML parsing of the results table
         div = data.find('div', attrs={'class': 'tcgSingles'})
@@ -120,7 +114,6 @@ class BayDragonStore(CardStore):
         for row in rows:
             cols = row.find_all('td')
             d = [ele.text.strip() for ele in cols if ele]
-            # print(d)
             # Filters out the column headings and any cards that are out of stock
             if d[7] not in ['Onhand', '0']:
 
@@ -134,12 +127,3 @@ class BayDragonStore(CardStore):
                     'Quantity': d[7]
                 })
         return card_results
-
-
-if __name__ == "__main__":
-    beadnd = ShopifyStore(url = 'bea-dnd.myshopify.com', name = 'BeaDndGames', games = ['MTG Single'])
-    hobbyMaster = HobbyMasterStore(url = 'https://hobbymaster.co.nz/cards/get-cards', name = 'Hobbymaster', games = ['MTG Single'])
-    bayDragon = BayDragonStore(url = 'https://www.baydragon.co.nz/search/category/01', name = 'BayDragon', games = ['MTG Single'])
-    # print(json.dumps(beadnd.findCards(['island']), indent=2))
-    print(json.dumps(beadnd.findCards(['Den of the bugbear']), indent=2))
-    print(beadnd.get_dataframe())
