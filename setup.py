@@ -27,5 +27,5 @@ setup(
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
     license='MIT',
-    install_requires=['bs4', 'pandas'],
+    install_requires=['bs4', 'pandas', 'alive_progress'],
 )
