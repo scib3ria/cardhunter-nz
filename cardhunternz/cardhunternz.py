@@ -1,6 +1,6 @@
 import pandas as pd
 import requests
-from cardstore import ShopifyStore, HobbyMasterStore, BayDragonStore
+from .cardstore import ShopifyStore, HobbyMasterStore, BayDragonStore
 
 class CardHunter:
     # List of New Zealand stores selling trading card singles (specifically Magic: the Gathering and Flesh and Blood)
