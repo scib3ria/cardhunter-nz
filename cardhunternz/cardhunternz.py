@@ -17,7 +17,7 @@ class CardHunter:
             self.games = [i for i in ['MTG Single', 'Flesh And Blood Single'] if input(f'Are you searching for {i}s? (y/n): ') == 'y']
         self.stores = [
             HobbyMasterStore(url='https://hobbymaster.co.nz/cards/get-cards', name='HobbyMaster', games=self.games),
-            BayDragonStore(url = 'https://www.baydragon.co.nz/search/category/01', name='BayDragon', games=self.games),
+            BayDragonStore(url='https://www.baydragon.co.nz/search/category/01', name='BayDragon', games=self.games),
             ShopifyStore(url='bea-dnd.myshopify.com', name='BeaDndGames', games=self.games),
             ShopifyStore(url='calico-keep.myshopify.com', name='Calico Keep', games=self.games),
             ShopifyStore(url='cardbard.myshopify.com', name='Card Bard', games=self.games),
@@ -29,6 +29,11 @@ class CardHunter:
             ShopifyStore(url='shuffle-n-cut-hobbies-games.myshopify.com', name='Shuffle and Cut Games', games=self.games),
             ShopifyStore(url='spellboundgames.myshopify.com', name='Spellbound Games', games=self.games),
             ShopifyStore(url='tcgculture.myshopify.com', name='TCG Culture', games=self.games),
+            ShopifyStore(url="card-merchant-hamilton.myshopify.com", name="Card Merchant Hamilton", games=self.games),
+            ShopifyStore(url="card-merchant-tauranga.myshopify.com", name="Card Merchant Tauranga", games=self.games),
+            ShopifyStore(url="card-merchant-christchurch.myshopify.com", name="Card Merchant Christchurch", games=self.games),
+            ShopifyStore(url="novagames-nz.myshopify.com", name="Nova Games", games=self.games),
+            ShopifyStore(url="tcg-collector-nz.myshopify.com", name="TCG Collector", games=self.games),
         ]
     
     def findCards(self, card_list):
