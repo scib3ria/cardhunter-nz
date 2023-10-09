@@ -54,6 +54,7 @@ class ShopifyStore(CardStore):
             'strict': True,
             'limit': 100,
             'title': card_name,
+            'quantityGreaterThan': 0,
         }
         resp = self.conn.post(url = 'https://portal.binderpos.com/external/shopify/products/forStore', json=data).json()
 
