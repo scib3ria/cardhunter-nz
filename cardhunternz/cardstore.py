@@ -55,7 +55,7 @@ class ShopifyStore(CardStore):
             'limit': 100,
             'title': card_name,
         }
-        resp = self.conn.post(url = 'https://appbeta.binderpos.com/external/shopify/products/forStore', json=data).json()
+        resp = self.conn.post(url = 'https://portal.binderpos.com/external/shopify/products/forStore', json=data).json()
 
         for product in resp['products']:
                 if product['overallQuantity']:
