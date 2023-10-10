@@ -45,9 +45,6 @@ class CardHunter:
             store.findCards(card_list)
             results.append(store.get_dataframe())
         self.data = pd.concat(results, ignore_index=True).sort_values(by=['card_name', 'price']).reset_index(drop=True)
-        for card in card_list:
-            if card not in list(self.data['card_name'].unique()):
-                print(f'Though we have searched far and wide, {card} is nowhere to be found in fair New Zealand!')
     
     def cheapestPrices(self, pandas=True):
         cheapest_cards = self.data.loc[self.data.groupby('card_name')['price'].idxmin(), :]
