@@ -84,18 +84,18 @@ class HobbyMasterStore(CardStore):
         # The data from Hobbymaster is stored a little strangely. Each cell is a list containing 12 items related to a card entry
         # The cell[0] is the card name, cell[9] is the card condition, cell[10] is the card price and cell[12] is the card stock
         for result in data:
-                if result['cell'][12] != 0:
-                    # replace '8+' string with int
-                    quantity = result['cell'][12]
-                    if quantity == '8+': quantity = 8
-                    # skip art cards
-                    if ("art card" in result["cell"][0].lower()) and self.skip_art_cards:
-                                continue
-                    card_results.append({
-                        'Name': f'{result["cell"][0]} {result["cell"][9]}',
-                        'Price': float(result['cell'][10].replace('$', '')),
-                        'Quantity': quantity
-                    })
+            if result['cell'][12] != 0:
+                # replace '8+' string with int
+                quantity = result['cell'][12]
+                if quantity == '8+': quantity = 8
+                # skip art cards
+                if ("art card" in result["cell"][0].lower()) and self.skip_art_cards:
+                            continue
+                card_results.append({
+                    'Name': f'{result["cell"][0]} [{result["cell"][1]}] {result["cell"][9]}',
+                    'Price': float(result['cell'][10].replace('$', '')),
+                    'Quantity': quantity
+                })
         return card_results
     
 class BayDragonStore(CardStore):
