@@ -102,10 +102,9 @@ class BayDragonStore(CardStore):
     def storeSearch(self, card_name):
         card_results = []
         # baydragon does not currently sell Flesh and Blood singles
-        if 'MTG Single' not in self.games:
-            return card_results
+        game_number = '01' if 'MTG Single' in self.games else '25'
         params = {'searchType': 'single', 'searchString': card_name}
-        html_content = self.conn.get(self.url, params=params).text
+        html_content = self.conn.get(f'{self.url}/brand/{game_number}', params=params).text
         data = BeautifulSoup(html_content, "lxml")
         # HTML parsing of the results table
         div = data.find('div', attrs={'class': 'tcgSingles'})

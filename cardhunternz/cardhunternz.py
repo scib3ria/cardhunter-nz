@@ -17,7 +17,7 @@ class CardHunter:
             self.games = [i for i in ['MTG Single', 'Flesh And Blood Single'] if input(f'Are you searching for {i}s? (y/n): ') == 'y']
         self.stores = [
             HobbyMasterStore(url='https://hobbymaster.co.nz/cards/get-cards', name='HobbyMaster', games=self.games),
-            BayDragonStore(url='https://www.baydragon.co.nz/search/category/01', name='BayDragon', games=self.games),
+            BayDragonStore(url='https://www.baydragon.co.nz/searchsingle/category/01', name='BayDragon', games=self.games),
             RookGamingStore(url='https://e734ef.myshopify.com', name='Rook Gaming', games=self.games),
             FabArmoryStore(url="https://fabarmoury-com.myshopify.com", name='fabarmory.com', games=self.games),
             ShopifyStore(url='bea-dnd.myshopify.com', name='BeaDndGames', games=self.games),
