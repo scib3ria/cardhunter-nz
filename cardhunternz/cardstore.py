@@ -128,3 +128,25 @@ class BayDragonStore(CardStore):
                     'Quantity': d[7]
                 })
         return card_results
+
+class RookGamingStore(CardStore):
+    def storeSearch(self, card_name):
+        # Rook Gaming does not currently sell MTG singles
+        card_results = []
+        if 'Flesh And Blood Single' not in self.games:
+            return card_results        
+        html_content = self.conn.get(f'{self.url}/search?q={card_name}').text
+        data = BeautifulSoup(html_content, "lxml")
+        # HTML parsing of the results
+        search_results = data.find('div', attrs={'class': 'template-search__results'})
+        product_cards = search_results.find_all('div', attrs={'class': 'product-card product-grid'})
+        for product_card in product_cards:
+            # Skip cards that are out of stock
+            if product_card.find('span', attrs = {'class': 'label-sold-out'}):
+                continue
+            card_results.append({
+                'Name': product_card.find('h6', attrs = {'class': 'product-card__name'}).text.strip('\n'),
+                'Price': float(product_card.find('div', attrs = {'class': 'product-price'}).text.strip('$')),
+                'Quantity': 1 # Rook Gaming does not have card quantities on its results page
+            })
+        return card_results

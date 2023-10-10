@@ -1,6 +1,6 @@
 import pandas as pd
 import requests
-from .cardstore import ShopifyStore, HobbyMasterStore, BayDragonStore
+from .cardstore import ShopifyStore, HobbyMasterStore, BayDragonStore, RookGamingStore
 
 class CardHunter:
     # List of New Zealand stores selling trading card singles (specifically Magic: the Gathering and Flesh and Blood)
@@ -18,6 +18,7 @@ class CardHunter:
         self.stores = [
             HobbyMasterStore(url='https://hobbymaster.co.nz/cards/get-cards', name='HobbyMaster', games=self.games),
             BayDragonStore(url='https://www.baydragon.co.nz/search/category/01', name='BayDragon', games=self.games),
+            RookGamingStore(url='https://e734ef.myshopify.com', name='Rook Gaming', games=self.games),
             ShopifyStore(url='bea-dnd.myshopify.com', name='BeaDndGames', games=self.games),
             ShopifyStore(url='calico-keep.myshopify.com', name='Calico Keep', games=self.games),
             ShopifyStore(url='cardbard.myshopify.com', name='Card Bard', games=self.games),
