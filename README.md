@@ -2,18 +2,26 @@
 A python library for finding the best prices on trading cards singles from stores in New Zealand. 
 Currently works for Magic: the Gathering and Flesh and Blood cards.
 Searches the following stores:
-- Hobbymaster
 - BayDragon
 - BeaDndGames
 - Calico Keep
 - Card Bard
 - Card Merchant
+- Card Merchant Christchurch
+- Card Merchant Hamilton
 - Card Merchant Nelson
+- Card Merchant Takapuna
+- Card Merchant Tauranga
+- Fabarmory.com
 - Goblin Games
+- Hobbymaster
 - Iron Knight Gaming
 - Magic at Willis
+- Nova Games
+- Rook Gaming
 - Shuffle and Cut Games
 - Spellbound Games
+- TCG Collector
 - TCG Culture
 
 # Instructions
@@ -38,7 +46,7 @@ cardhunter.findCards(card_list)
 
 The cardhunter will take some time to retrieve and process the data.
 
-Once finished, call `cardhunter.cheapestPrices()` to see which stores have the best deals for earch searched card, or `cardhunter.allPrices` to display a summary of all card prices in a pandas dataframe.
+Once finished, call `cardhunter.cheapestPrices()` to see which stores have the best deals for each searched card, or `cardhunter.allPrices()` to display a summary of all card prices in a pandas dataframe.
 
 # Requirements
 
