@@ -107,10 +107,8 @@ class BayDragonStore(CardStore):
         html_content = self.conn.get(f'{self.url}/brand/{game_number}', params=params).text
         data = BeautifulSoup(html_content, "lxml")
         # HTML parsing of the results table
-        div = data.find('div', attrs={'class': 'tcgSingles'})
-        table = div.find('table')
-        table_body = table.find('tbody')
-        rows = table_body.find_all('tr')
+        table = data.find('table', attrs={'id': ['tcgSingles', 'magicSingles']})
+        rows = table.find_all('tr')
         for row in rows:
             cols = row.find_all('td')
             d = [ele.text.strip() for ele in cols if ele]
