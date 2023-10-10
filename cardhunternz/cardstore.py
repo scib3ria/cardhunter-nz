@@ -150,3 +150,24 @@ class RookGamingStore(CardStore):
                 'Quantity': 1 # Rook Gaming does not have card quantities on its results page
             })
         return card_results
+    
+class FabArmoryStore(CardStore):
+    def storeSearch(self, card_name):
+        # Fabarmory does not currently sell MTG singles
+        card_results = []
+        if 'Flesh And Blood Single' not in self.games:
+            return card_results
+        html_content = self.conn.get(f'{self.url}/search?q={card_name}').text
+        data = BeautifulSoup(html_content, "lxml")
+        items = data.find('ul', attrs= {'class': 'page-width list-view-items'})
+        card_products = items.find_all('li')
+        for card_product in card_products:
+            # Skip cards that are not in stock
+            if card_product.find('dl', attrs={'class': 'price--sold-out'}):
+                continue
+            card_results.append({
+                'Name': card_product.find('span', attrs={'class': 'product-card__title'}).text,
+                'Price': float(card_product.find('span', attrs={'class': 'price-item--regular'}).text.strip('$').strip()),
+                'Quantity': 1, # FAB Armory does not have card quantities on its results page
+            })
+        return card_results
