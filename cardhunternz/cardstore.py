@@ -4,18 +4,19 @@ import pandas as pd
 import requests
 from alive_progress import alive_bar
 from bs4 import BeautifulSoup
+from typing import Dict
 
 
 class CardStore(ABC):
-    def __init__(self, url, name, games, skip_art_cards=True):
+    def __init__(self, url, name, games, skip_art_cards=True) -> None:
         self.url = url
         self.name = name
         self.games = games
         self.skip_art_cards = skip_art_cards
         self.conn = requests.Session()
-        self.data = {}
+        self.data: Dict[str, str] = {}
 
-    def findCards(self, card_list):
+    def findCards(self, card_list) -> Dict[str, str]:
         # Updates the data with each card in card_list containing an empty dict
         self.data.update({k: {} for k in card_list})
 
@@ -50,6 +51,64 @@ class CardStore(ABC):
 
 class ShopifyStore(CardStore):
     # Queries BinderPOS API for each store  and processes the resulting data
+    def findCards(self, card_list) -> Dict[str, str]:
+        # Updates the data with each card in card_list containing an empty dict
+        self.data.update({k: {} for k in card_list})
+
+        with alive_bar(
+            total=1, dual_line=True, title=self.name, title_length=21
+        ) as bar:
+            bar.text = "Hunting for cards"
+            self.data = self.storeSearchBulk(card_list)
+            bar()
+            return self.data
+
+    # Search all cards in card_list in single query
+    # This helps avoid being blocked by CloudFlare
+    def storeSearchBulk(self, card_list):
+        bulk_results = {}
+        request_json = [
+            {"card": card, "quantity": 1} for card in card_list
+        ]  # quantity is irrelevant for query
+        resp = requests.post(
+            url="https://portal.binderpos.com/external/shopify/decklist",
+            json=request_json,
+            headers={"Content-Type": "application/json; charset=utf-8"},
+            params={
+                "storeUrl": self.url,
+                "type": "mtg" if "MTG Single" in self.games else "fleshAndBlood",
+            },
+        )
+        try:
+            resp = resp.json()
+        except Exception:
+            if "You are being rate limited" in str(resp.content):
+                print("Blocked by Cloudflare")
+            else:
+                print("unexpected exception")
+                print(resp.content)
+            return {}
+        for result in resp:
+            card_results = []
+            for product in result["products"]:
+                assert (
+                    len(product["variants"]) == 1
+                )  # always a single variant per result
+                variant = product["variants"][0]
+                name = f"{product['title']} - {variant['title']}"
+                price = variant["price"]
+                quantity = variant["quantity"]
+                card_results.append(
+                    {
+                        "Name": name,
+                        "Price": price,
+                        "Quantity": quantity,
+                    }
+                )
+            bulk_results[result["searchName"]] = card_results
+        return bulk_results
+
+    # deprecated in favor of storeSearchBulk above
     def storeSearch(self, card_name):
         card_results = []
         data = {
