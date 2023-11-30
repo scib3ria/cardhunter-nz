@@ -1,7 +1,9 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
-VERSION = '0.0.1'
-DESCRIPTION = 'A library for finding the best prices on trading cards from stores in New Zealand.'
+VERSION = "0.0.1"
+DESCRIPTION = (
+    "A library for finding the best prices on trading cards from stores in New Zealand."
+)
 LONG_DESCRIPTION = """
 A library for finding the best prices on trading cards from stores in New Zealand. 
 Currently works for Magic: the Gathering and Flesh and Blood cards.
@@ -20,12 +22,12 @@ Spellbound Games
 """
 
 setup(
-    name='cardhunternz',
-    packages=find_packages(include=['cardhunternz']),
-    author='scib3ria',
+    name="cardhunternz",
+    packages=find_packages(include=["cardhunternz"]),
+    author="scib3ria",
     version=VERSION,
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
-    license='MIT',
-    install_requires=['bs4', 'pandas', 'alive_progress'],
+    license="MIT",
+    install_requires=["bs4", "pandas", "alive_progress"],
 )

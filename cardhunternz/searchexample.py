@@ -1,13 +1,9 @@
-from cardhunternz import CardHunter
 import pandas as pd
 
+from cardhunternz import CardHunter
 
 card_hunter = CardHunter(mtg_search=True)
-cards = [
-    "Gremlin Infestation",
-    "Famished Paladin",
-    "Crashing Drawbridge"
-]
+cards = ["Gremlin Infestation", "Famished Paladin", "Crashing Drawbridge"]
 prices = []
 card_hunter.findCards(cards)
 
