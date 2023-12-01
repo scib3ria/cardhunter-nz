@@ -35,90 +35,127 @@ class CardHunter:
                 url="https://www.baydragon.co.nz/searchsingle/category/01",
                 name="BayDragon",
                 games=self.games,
+                session=self.conn,
             ),
             ShopifyStore(
-                url="bea-dnd.myshopify.com", name="BeaDndGames", games=self.games
+                url="bea-dnd.myshopify.com",
+                name="BeaDndGames",
+                games=self.games,
+                session=self.conn,
             ),
             ShopifyStore(
-                url="calico-keep.myshopify.com", name="Calico Keep", games=self.games
+                url="calico-keep.myshopify.com",
+                name="Calico Keep",
+                games=self.games,
+                session=self.conn,
             ),
             ShopifyStore(
-                url="cardbard.myshopify.com", name="Card Bard", games=self.games
+                url="cardbard.myshopify.com",
+                name="Card Bard",
+                games=self.games,
+                session=self.conn,
             ),
             ShopifyStore(
-                url="chloetest.myshopify.com", name="Card Merchant", games=self.games
+                url="chloetest.myshopify.com",
+                name="Card Merchant",
+                games=self.games,
+                session=self.conn,
             ),
             ShopifyStore(
                 url="card-merchant-christchurch.myshopify.com",
                 name="Card Merchant Christchurch",
                 games=self.games,
+                session=self.conn,
             ),
             ShopifyStore(
                 url="card-merchant-hamilton.myshopify.com",
                 name="Card Merchant Hamilton",
                 games=self.games,
+                session=self.conn,
             ),
             ShopifyStore(
                 url="card-merchant-nelson.myshopify.com",
                 name="Card Merchant Nelson",
                 games=self.games,
+                session=self.conn,
             ),
             ShopifyStore(
                 url="kidsandmore.myshopify.com",
                 name="Card Merchant Takapuna",
                 games=self.games,
+                session=self.conn,
             ),
             ShopifyStore(
                 url="card-merchant-tauranga.myshopify.com",
                 name="Card Merchant Tauranga",
                 games=self.games,
+                session=self.conn,
             ),
             FabArmoryStore(
                 url="https://fabarmoury-com.myshopify.com",
                 name="fabarmory.com",
                 games=self.games,
+                session=self.conn,
             ),
             ShopifyStore(
-                url="goblingames.myshopify.com", name="Goblin Games", games=self.games
+                url="goblingames.myshopify.com",
+                name="Goblin Games",
+                games=self.games,
+                session=self.conn,
             ),
             HobbyMasterStore(
                 url="https://hobbymaster.co.nz/cards/get-cards",
                 name="HobbyMaster",
                 games=self.games,
+                session=self.conn,
             ),
             ShopifyStore(
                 url="iron-knight-gaming.myshopify.com",
                 name="Iron Knight Gaming",
                 games=self.games,
+                session=self.conn,
             ),
             ShopifyStore(
                 url="magicatwillis.myshopify.com",
                 name="Magic at Willis",
                 games=self.games,
+                session=self.conn,
             ),
             ShopifyStore(
-                url="novagames-nz.myshopify.com", name="Nova Games", games=self.games
+                url="novagames-nz.myshopify.com",
+                name="Nova Games",
+                games=self.games,
+                session=self.conn,
             ),
             RookGamingStore(
-                url="https://e734ef.myshopify.com", name="Rook Gaming", games=self.games
+                url="https://e734ef.myshopify.com",
+                name="Rook Gaming",
+                games=self.games,
+                session=self.conn,
             ),
             ShopifyStore(
                 url="shuffle-n-cut-hobbies-games.myshopify.com",
                 name="Shuffle and Cut Games",
                 games=self.games,
+                session=self.conn,
             ),
             ShopifyStore(
                 url="spellboundgames.myshopify.com",
                 name="Spellbound Games",
                 games=self.games,
+                session=self.conn,
             ),
             ShopifyStore(
                 url="tcg-collector-nz.myshopify.com",
                 name="TCG Collector",
                 games=self.games,
+                session=self.conn,
             ),
             ShopifyStore(
-                url="tcgculture.myshopify.com", name="TCG Culture", games=self.games
+                url="tcgculture.myshopify.com",
+                name="TCG Culture",
+                games=self.games,
+                session=self.conn,
             ),
         ]
 
@@ -128,11 +165,14 @@ class CardHunter:
         for store in self.stores:
             store.findCards(card_list)
             results.append(store.get_dataframe())
-        self.data = (
-            pd.concat(results, ignore_index=True)
-            .sort_values(by=["card_name", "price"])
-            .reset_index(drop=True)
+        df = pd.concat(results, ignore_index=True)
+        # normalize names of cards e.g. Darkslick Shores (Expeditions)
+        df["card_name"] = (
+            df["card_name"].str.replace(r" +\(.*\)", "", regex=True).str.title()
         )
+        # sort by card, then price
+        df = df.sort_values(by=["card_name", "price"]).reset_index(drop=True)
+        self.data = df
 
     def cheapestPrices(self, pandas=True):
         cheapest_cards = self.data.loc[

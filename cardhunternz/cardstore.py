@@ -4,16 +4,16 @@ import pandas as pd
 import requests
 from alive_progress import alive_bar
 from bs4 import BeautifulSoup
-from typing import Dict
+from typing import Dict, List
 
 
 class CardStore(ABC):
-    def __init__(self, url, name, games, skip_art_cards=True) -> None:
+    def __init__(self, url, name, games, skip_art_cards=True, session=None) -> None:
         self.url = url
         self.name = name
         self.games = games
         self.skip_art_cards = skip_art_cards
-        self.conn = requests.Session()
+        self.conn = session or requests.Session()
         self.data: Dict[str, str] = {}
 
     def findCards(self, card_list) -> Dict[str, str]:
@@ -56,21 +56,46 @@ class ShopifyStore(CardStore):
         self.data.update({k: {} for k in card_list})
 
         with alive_bar(
-            total=1, dual_line=True, title=self.name, title_length=21
+            total=2, dual_line=True, title=self.name, title_length=21
         ) as bar:
+            # extend search list
+            bar.text = "Searching alternate versions"
+            extended_list = []
+            for card_name in card_list:
+                extended_list.extend(self.get_alternate_names(card_name=card_name))
+            # print(f'original list: {card_list}')
+            # print(f'extended list: {extended_list}')
+            bar()
+
             bar.text = "Hunting for cards"
-            self.data = self.storeSearchBulk(card_list)
+            self.data = self.storeSearchBulk(extended_list)
             bar()
             return self.data
+
+    def get_alternate_names(self, card_name: str) -> List[str]:
+        resp = self.conn.get(
+            url=f"https://{self.url}/search/suggest.json",
+            params={"q": card_name},
+        )
+        try:
+            results = resp.json()
+        except:
+            print(resp.content)
+        in_stock = [
+            item["title"][: item["title"].find("[")].strip()
+            for item in results["resources"]["results"]["products"]
+            if item["available"] == True
+        ]
+        return in_stock
 
     # Search all cards in card_list in single query
     # This helps avoid being blocked by CloudFlare
     def storeSearchBulk(self, card_list):
         bulk_results = {}
         request_json = [
-            {"card": card, "quantity": 1} for card in card_list
+            {"card": card, "quantity": 100} for card in card_list
         ]  # quantity is irrelevant for query
-        resp = requests.post(
+        resp = self.conn.post(
             url="https://portal.binderpos.com/external/shopify/decklist",
             json=request_json,
             headers={"Content-Type": "application/json; charset=utf-8"},
@@ -96,6 +121,8 @@ class ShopifyStore(CardStore):
                 )  # always a single variant per result
                 variant = product["variants"][0]
                 name = f"{product['title']} - {variant['title']}"
+                if ("art card" in name.lower()) and self.skip_art_cards:
+                    continue
                 price = variant["price"]
                 quantity = variant["quantity"]
                 card_results.append(
