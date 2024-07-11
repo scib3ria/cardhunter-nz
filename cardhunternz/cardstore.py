@@ -173,3 +173,21 @@ class FabArmoryStore(CardStore):
                 'Quantity': 1, # FAB Armory does not have card quantities on its results page
             })
         return card_results
+    
+class HobbyLordsStore(CardStore):
+    def storeSearch(self, card_name):
+        card_results = []
+        html_content = self.conn.get(self.url + card_name).text
+        data = BeautifulSoup(html_content, "lxml")
+        items = data.find_all('div', attrs={'class': 'col-lg-7'})
+        for item in items:
+            name, price = item.find_all('p')
+            # Check for exact name matches
+            if card_name not in name.text:
+                continue
+            card_results.append({
+                'Name': name.text,
+                'Price': float(price.text),
+                'Quantity': 1,  # Hobby Lords does not have card quantities on its results page
+            })
+        return card_results

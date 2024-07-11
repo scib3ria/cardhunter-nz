@@ -3,6 +3,7 @@ import requests
 from cardstore import (
     BayDragonStore,
     FabArmoryStore,
+    HobbyLordsStore,
     HobbyMasterStore,
     RookGamingStore,
     ShopifyStore
@@ -80,6 +81,11 @@ class CardHunter:
             'type': 'shopify',
             'url': 'goblingames.myshopify.com',
             'products': ['MTG Single', 'Flesh And Blood Single', 'One Piece Single', 'Star Wars: Unlimited Single']
+        },
+        'Hobby Lords': {
+            'type': 'hobbylords',
+            'url': 'https://www.hobbylords.co.nz/shop/shop-all/shop-search-suggestion?category=92&product_keyword=',
+            'products': ['MTG Single', 'Flesh And Blood Single']
         },
         'Iron Knight Gaming': {
             'type': 'shopify',
@@ -169,6 +175,8 @@ class CardHunter:
                     self.stores.append(FabArmoryStore(url=store_info['url'], name=store_name, games=self.games))
                 elif store_info['type'] == 'rookgaming':
                     self.stores.append(RookGamingStore(url=store_info['url'], name=store_name, games=self.games))
+                elif store_info['type'] == 'hobbylords':
+                    self.stores.append(HobbyLordsStore(url=store_info['url'], name=store_name, games=self.games))
                 else:
                     self.stores.append(ShopifyStore(url=store_info['url'], name=store_name, games=self.games))
     
