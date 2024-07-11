@@ -76,33 +76,35 @@ class HobbyMasterStore(CardStore):
         card_results = []
         data = []
         for game in self.games:
-            game_number = '1' if game == 'MTG Single' else '37'
+            if game == 'MTG Single':
+                game_number = '1'
+            elif game == 'Flesh And Blood Single':
+                game_number = '37'
+            elif game == 'One Piece Single':
+                game_number = '54'
             hb_data = self.conn.get(f'{self.url}?lang=&game={game_number}$foil=&_search=true&name={card_name}').json()
             if 'rows' in hb_data:
                 data.extend(hb_data['rows'])
         # The data from Hobbymaster is stored a little strangely. Each cell is a list containing 12 items related to a card entry
         # The cell[0] is the card name, cell[9] is the card condition, cell[10] is the card price and cell[12] is the card stock
         for result in data:
-                if result['cell'][12] != 0:
-                    # replace '8+' string with int
-                    quantity = result['cell'][12]
-                    if quantity == '8+': quantity = 8
-                    # skip art cards
-                    if ("art card" in result["cell"][0].lower()) and self.skip_art_cards:
-                                continue
-                    card_results.append({
-                        'Name': f'{result["cell"][0]} {result["cell"][9]}',
-                        'Price': float(result['cell'][10].replace('$', '')),
-                        'Quantity': quantity
-                    })
+            if result['cell'][12] != 0:
+                # replace '8+' string with int
+                quantity = result['cell'][12]
+                if quantity == '8+': quantity = 8
+                # skip art cards
+                if ("art card" in result["cell"][0].lower()) and self.skip_art_cards:
+                            continue
+                card_results.append({
+                    'Name': f'{result["cell"][0]} {result["cell"][9]}',
+                    'Price': float(result['cell'][10].replace('$', '')),
+                    'Quantity': quantity
+                })
         return card_results
     
 class BayDragonStore(CardStore):
     def storeSearch(self, card_name):
         card_results = []
-        # baydragon does not currently sell Flesh and Blood singles
-        if 'MTG Single' not in self.games:
-            return card_results
         params = {'searchType': 'single', 'searchString': card_name}
         html_content = self.conn.get(self.url, params=params).text
         data = BeautifulSoup(html_content, "lxml")
@@ -126,4 +128,48 @@ class BayDragonStore(CardStore):
                     'Price': float(d[6].replace('NZ$', '')),
                     'Quantity': d[7]
                 })
+        return card_results
+    
+class RookGamingStore(CardStore):
+    def storeSearch(self, card_name):
+        card_results = []   
+        html_content = self.conn.get(f'{self.url}/search?q={card_name}').text
+        data = BeautifulSoup(html_content, "lxml")
+        # HTML parsing of the results
+        search_results = data.find('div', attrs={'class': 'template-search__results'})
+        product_cards = search_results.find_all('div', attrs={'class': 'product-card product-grid'})
+        for product_card in product_cards:
+            # Skip cards that are out of stock
+            if product_card.find('span', attrs = {'class': 'label-sold-out'}):
+                continue
+            # Skip cards that do not contain exact card name
+            if card_name not in product_card.find('h6', attrs = {'class': 'product-card__name'}).text:
+                continue
+            card_results.append({
+                'Name': product_card.find('h6', attrs = {'class': 'product-card__name'}).text.strip('\n'),
+                'Price': float(product_card.find('div', attrs = {'class': 'product-price'}).text.strip('$')),
+                'Quantity': 1 # Rook Gaming does not have card quantities on its results page
+            })
+        return card_results
+
+    
+class FabArmoryStore(CardStore):
+    def storeSearch(self, card_name):
+        card_results = []
+        html_content = self.conn.get(f'{self.url}/search?q={card_name}').text
+        data = BeautifulSoup(html_content, "lxml")
+        items = data.find('ul', attrs= {'class': 'page-width list-view-items'})
+        card_products = items.find_all('li')
+        for card_product in card_products:
+            # Skip cards that are not in stock
+            if card_product.find('dl', attrs={'class': 'price--sold-out'}):
+                continue
+            # Skip cards that are not exact name matches
+            if card_name not in card_product.find('span', attrs={'class': 'product-card__title'}).text:
+                continue
+            card_results.append({
+                'Name': card_product.find('span', attrs={'class': 'product-card__title'}).text,
+                'Price': float(card_product.find('span', attrs={'class': 'price-item--regular'}).text.strip('$').strip().replace(',', '')),
+                'Quantity': 1, # FAB Armory does not have card quantities on its results page
+            })
         return card_results
